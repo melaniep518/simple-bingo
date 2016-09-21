@@ -3,6 +3,10 @@ A basic scaffold for a simple themed bingo game.
 
 This is a periodic table themed bingo game. 
 
+Installation:
+
+Clone this repo onto your personal computer and open the bingo folder in a text editor. Right click the html file to open in your browser.
+
 Instructions:
 
 1. Click the button "Get a clue!" to generate a random clue.
