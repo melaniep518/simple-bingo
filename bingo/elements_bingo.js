@@ -152,20 +152,16 @@ numTries.innerHTML = 'You have ' + tries + ' tries before your next clue.';
 // element appears twice on the board 2) refills elementsArray for later use
 
 function generateBoard() {
-	for(var i = 0; i < boardSize; i++) {
-		bingoArr[i] = [];
-		for(var j = 0; j < boardSize; j++) {
-			var randomIndex = Math.floor(Math.random()*elementsArray.length);
-			var randomElement = elementsArray[randomIndex];
-			bingoArr[i].push(randomElement);
-			elementsArray.splice(randomIndex, 1);
-		}
-	}
-	for(var r = 0; r < bingoArr.length; r++) {
-		for(var c = 0; c < bingoArr[r].length; c++) {
-			elementsArray.push(bingoArr[r][c]);
-		}
-	}
+  var eleArrCopy = elementsArray.slice();
+  for(var i = 0; i < boardSize; i++) {
+    bingoArr[i] = [];
+    for(var j = 0; j < boardSize; j++) {
+      var randomIndex = Math.floor(Math.random()*eleArrCopy.length);
+      var randomElement = eleArrCopy[randomIndex];
+      bingoArr[i].push(randomElement);
+      eleArrCopy.splice(randomIndex, 1);
+    }
+  }
 }
 
 // This function fills the table element with the 5x5 array, creates a new image with the square property of the element object at each index
@@ -247,6 +243,7 @@ function reset() {
 
 // This function detects whether or not a player has won by a row Bingo ----------------------------------------------------------------------------------------------
 
+
 function rowWins(arr) {
 	outerloop:
 		for(var r = 0; r < arr.length; r++) {
@@ -255,11 +252,8 @@ function rowWins(arr) {
 					continue outerloop;
 				}
 			}
-			bingo = true;
-			numTries.innerHTML = '<p> ROW ' + (r+1) + ' BINGO! </p>';
-			return;
+			return true;
 		}
-		return;
 }
 
 // This function detects whether or now the player has won by a column Bingo ----------------------------------------------------------------------------------------------
@@ -273,11 +267,8 @@ function colWins(arr) {
 					continue outerloop;
 				}
 			}
-			bingo = true;
-			numTries.innerHTML = '<p> COLUMN ' + (c+1) + ' BINGO! </p>';
-			return;
+			return true;
 		}
-		return;
 }
 
 // Detects a diagonal win from left to right ----------------------------------------------------------------------------------------------
@@ -288,9 +279,7 @@ function diagonalsLtrWin(arr) {
 			return;
 		}
 	}
-	bingo = true;
-	numTries.innerHTML = '<p> DIAGONAL BINGO! </p>';
-	return;
+	return true;
 }
 // Detects a diagonal win from right to left ----------------------------------------------------------------------------------------------
 
@@ -302,9 +291,15 @@ function diagonalsRtlWin(arr) {
 		}
 		c--;
 	}
-	bingo = true;
-	numTries.innerHTML = '<p> BINGO! </p>';
-	return;
+	return true;
+}
+
+function isThereWin() {
+  if(rowWins(bingoArr) || colWins(bingoArr) || diagonalsLtrWin(bingoArr) || diagonalsRtlWin(bingoArr)) {
+    bingo = true;
+    numTries.innerHTML = '<p> BINGO! </p>';
+    return;
+  }
 }
 //----------------------------------ACTUAL GAME-----------------------------------------------------
 var gamePiece = document.getElementsByClassName('square');
@@ -370,11 +365,7 @@ function activateGame() {
 			}
 
 // Each time a player selects a correct piece the game runs each of these functions to search for a possible wim
-
-			rowWins(bingoArr);
-			colWins(bingoArr);
-			diagonalsLtrWin(bingoArr);
-			diagonalsRtlWin(bingoArr);
+      isThereWin();
 		})
 	}
 }
